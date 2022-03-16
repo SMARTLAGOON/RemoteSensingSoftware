@@ -10,7 +10,7 @@ import numpy as np
 from numpy import ravel
 import datetime
 import configparser
-import basedatos.databaseES as DB
+import database.elasticSearch_adapter as DB
 import logging
 import base64
 from shapely.geometry import Polygon, Point

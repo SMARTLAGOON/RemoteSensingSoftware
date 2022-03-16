@@ -11,7 +11,7 @@ import datetime
 import time
 from shapely.geometry import Polygon
 import configparser
-import basedatos.databaseES as DB
+import database.elasticSearch_adapter as DB
 import json
 import logging
 
