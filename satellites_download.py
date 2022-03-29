@@ -9,8 +9,9 @@ import traceback
 import pandas as PD
 import datetime
 import os
-import nasa
-import esa
+import classes.nasa as nasa
+import classes.esa as esa
+import classes.esa_vito as esa_vito
 
 
 try:
@@ -20,7 +21,6 @@ except Exception as EX:
     print("Config file parameter missed.")
     exit(-1)
 
-
 with open(config_path) as config_file:
      config = json.loads(config_file.read())
 
@@ -29,7 +29,7 @@ try:    #fechas
     agency = config['agency']
     satellite = config['satellite']
     instrument = config['instrument']
-    logging.basicConfig(filename=satellite + '_donwload.log', format='%(asctime)s %(message)s', level=logging.INFO)
+    logging.basicConfig(filename="logs/" + satellite + '_donwload.log', format='%(asctime)s %(message)s', level=logging.INFO)
     try:
         date_from = config['date_from']
         date_to = config['date_to']
@@ -66,38 +66,38 @@ except Exception as EX:
 
 if str.upper(agency) == "ESA":
     #SAT = esa.ESA(satellite, instrument, work_path, database)
-    SAT = esa.ESA(config)
+    if instrument == "SGLS":
+        SAT = esa_vito.Vito(config)
+    else:
+        SAT =  esa.ESA(config)
 elif str.upper(agency) == "NASA":
-    SAT = nasa.NASA(satellite, instrument, work_path, database)
+    SAT = nasa.NASA(config)
 else:
     print("ERROR: Agency value NOT RECOGNIZED")
     exit(-1)
 
-
-
 current_date = fini
-print()
+
 print("--> Satellite_Download.py....")
 print()
 while current_date <= ffin:
     fecha = datetime.datetime.strftime(current_date, format="%Y-%m-%d")
-    print("--> Looking for data at", fecha)
-    print()
-    i = 0
+    logging.info("--> Looking for data at " + fecha)
+
     for idx, row in points.iterrows():
         try:
             file = SAT.get_file( row['lat'], row['lon'], fecha)
             if file is None:
-                print("------> No data for point ", row['name'], row['lat'], row['lon'], "at", fecha)
-                break
+                msg = ["------> No data for point ", row['name'], row['lat'], row['lon'], "at", fecha]
+                logging.info(str(msg))
                 continue
-            print("------> Downloaded", row['name'], row['lat'], row['lon'], fecha, file)
+            msg = ["------> Downloaded", row['name'], row['lat'], row['lon'], fecha, file]
+            logging.info(str(msg))
         except Exception as e:
             print("Error")
             traceback.print_exc()
             print(e)
-        break
-    current_date = current_date + datetime.timedelta(days=1)
 
-print()
+    current_date = current_date + datetime.timedelta(days=1)
 print("File Download ends")
+logging.info("File Download ends")

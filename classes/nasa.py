@@ -17,7 +17,7 @@ from shapely.geometry import Polygon, Point
 
 class NASA:
 
-    def __init__(self, satellite, instrument, work_path, url_elastic):
+    def __init__(self,  project=None):
         config = configparser.ConfigParser()
         config.read("config.ini")
         self.agency = "NASA"
@@ -28,23 +28,54 @@ class NASA:
         self.token = None #config["NASA"]["token"]
         self.token_requested = False #controla en caso de error que no entre en bucle regenerando tokens: crea uno y si falla hay otro problema.
         self.date_format = config["NASA"]["date_format"]
-        if url_elastic:
+        self.document = {}
+
+        if project:
+            print(project)
+            url_elastic = project['database']
+            if url_elastic:
+                try:
+                    self.database = DB.Database(url_elastic)
+                except Exception as e:
+                    print("Error conecting to elastic", url_elastic, str(e))
+                    exit(-1)
+            else:
+                self.database = None
+
+            # Producttype & processingLevel are unecesary, they are used to save at database and keep the structure
+            # NASA product based the search in API using just instrument parameter that does not have a general form to
+            # make it automatic.
+            self.instrument = project['instrument']
+            extract_info = self.instrument.split("_")
             try:
-                self.database = DB.Database(url_elastic)
-            except Exception as e:
-                print("Error conecting to elastic", url_elastic, str(e))
-                exit(-1)
+                self.processing_level = project['processing_level']
+            except:
+                try:
+                    self.processing_level = extract_info[1]
+                except:
+                    self.processing_level = ''
+            try:
+                self.product_type = project['product_type']
+            except:
+                try:
+                    self.product_type = extract_info[1]
+                except:
+                    self.product_type = ''
+
+            self.instrument = project['instrument']
+            self.satellite = project['satellite']
+            self.work_path = project['files']
+            self.document = {'agency': self.agency,'satellite': self.satellite, 'instrument': self.instrument, 'path':  self.work_path, 'product_type':self.product_type, 'processing_level':self.processing_level }
+            self.check_token()
+            self.set_cookies()
+            logging.info("NASA.py: " + self.instrument + " Loaded NASA Project:")
+            logging.info(self.document.__str__())
+
         else:
-            self.database = None
-        self.instrument = instrument
-        self.satellite = satellite
-        self.work_path = work_path
-        self.document = {'agency': self.agency,'satellite': satellite, 'instrument': instrument, 'path': work_path}
-        self.check_token()
-        self.set_cookies()
+            print("No project loaded")
+            self.work_path = "."
+
         self.download = True
-        logging.info("NASA.py: " + self.instrument + " Loaded NASA Project:")
-        logging.info(self.document.__str__())
 
     def check_token(self):
         url = "https://urs.earthdata.nasa.gov/api/users/tokens"
@@ -80,7 +111,9 @@ class NASA:
 
         if response.status_code != 200:
             logging.info("NASA.py: " + self.instrument + " DEBUG: No token generated")
-            logging.info("NASA.py: " + self.instrument + " ----> " + response.content)
+            logging.info("NASA.py: " + self.instrument + " ----> " + response.status_code)
+            print(response.status_code)
+            print(response.content)
             exit(-1)
 
         token = response.json()
@@ -277,12 +310,13 @@ class NASA:
 
         params = {
                   "page_size": 7,
-                  "sort_key" : "start_date",
-                  "short_name" : self.instrument,
-                  "provider" : "OB_DAAC",
-                  "point" : point_url,
-                  "temporal" :temporal
+                  "sort_key": "start_date",
+                  "short_name": self.instrument,
+                  "provider": "OB_DAAC",
+                  "point": point_url,
+                  "temporal": temporal
         }
+
         headers = {'Authorization': 'Bearer ' + self.token}
         umms = []
         r = RQ.get(self.search_url, params=params, headers=headers) # auth=("Bearer", self.token))

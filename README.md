@@ -1,27 +1,27 @@
 # RemoteSensingSoftware
 This repo contains remote sensing software developed in SMARTLAGOON project.
 
-# USES
-This repo contains scripts that allows to download satelital files batches from NASA y ESA. 
+## Uses
+This repo contains scripts that allow to download satellite files from NASA y ESA in batches by date and points. 
 
-# Available and tested platforms
-Nasa
+## Available and tested platforms
+### NASA
 MODIS Terra, SNPP VIRRS, NOOA VIIRS for OC instrument and Level 2.
 
-ESA
+### ESA
 Sentinel-3 A y B for OLCI instrument and  Level 2.
 
-# Requiriments
+## Requiriments
 For ESA products (Sentinels): you should have an account in creodias.es (https://portal.creodias.eu/register.php). The user and password will be add to config.ini of this project.
 
 For NASA product (MODIS, NOAA, SNPP, etc): you should have an account in https://cmr.earthdata.nasa.gov/. The user and password will be add to config.ini of this project.
 
-The project uses ElasticSearch to control the downloaded files and checks whether the point requested exists in a preivius file downloaded. It is posible run the download.py with database field empty, but it is necesary to generate the csv and other processes. 
+The project uses ElasticSearch to control the downloaded files and checks whether the point requested exists in a previous file downloaded. It is posible run the download.py with database field empty, but it is necesary to generate the csv and other processes. 
 
-# MAPPING for create elasticsearch index
+### Json for create elasticsearch index
 ....
 
-## Config.ini
+## Config.ini 
 This file contains the basic parameters to connect the APIs. The structure is:
 
 [ESA]
@@ -40,11 +40,23 @@ This file contains the basic parameters to connect the APIs. The structure is:
 
 The user just need to fill user_name and passwords in the platforms to use.
 
-# Project.json
+## Files project.json
 The scripts are based on project. A project is a json file wherein is defined the parameters to requests the api. Also this file contains the path wherein NC files will be saved and csv files will be generated.
 
+### stations.csv
+Free to add field. 
+Required "name", "lat", "lon"
 
-# Running without Elasticsearch
+## Notes
+### log
+The scripts use loggin lib to write the results of the process. Also they print important messages (exceptions) in console.
+Log files are created in root path using the format: name of satellite (from project.json) + script_name.
+
+## Script definitions
+
+
+## Running without Elasticsearch
+### get data from downloaded files
 import esa
 file = 'file_nc/zip'
 e = esa.ESA()

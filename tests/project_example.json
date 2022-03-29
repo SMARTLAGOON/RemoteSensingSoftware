@@ -1,0 +1,14 @@
+{
+    "project": "Humedad_SUELO",
+    "agency": "ESA",
+    "satellite": "S1",
+    "instrument": "SSM",
+    "processingLevel": "CGLS",
+    "productType": "SSM",
+    "date_from": "2020-01-01",
+    "date_to": "2020-01-01",
+    "points": "stations.csv",
+    "files" : ".",
+    "database": "http://127.0.0.1:9200",
+    "csv_path": "."
+}

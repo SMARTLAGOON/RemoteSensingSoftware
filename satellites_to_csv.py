@@ -10,8 +10,8 @@ import pandas as PD
 import datetime
 import os
 import csv
-import nasa
-import esa
+from classes import nasa
+from classes import esa
 import logging
 import time
 
@@ -39,7 +39,7 @@ try:  # fechas
     project = config['project']
     agency = config['agency']
     satellite = config['satellite']
-    logging.basicConfig(filename=satellite + '_to_csv.log', format='%(asctime)s %(message)s', level=logging.INFO)
+    logging.basicConfig(filename="logs/" + satellite + '_to_csv.log', format='%(asctime)s %(message)s', level=logging.INFO)
     
     instrument = config['instrument']
     date_from = config['date_from']
