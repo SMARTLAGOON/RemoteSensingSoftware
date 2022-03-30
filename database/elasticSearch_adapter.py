@@ -1,13 +1,13 @@
+# coding=utf-8
 # Gestiona los datos de la aplicacion en elastic.
 # los id de los elementos de elasctic se corresponde con en el nombre del archivo que es unico.
-
 import traceback
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 
 
+class Database:
 
-class Database():
     def __init__(self, url="http://127.0.0.1:9200", name='nc_files'):
         try:
             self.db = Elasticsearch(url)
@@ -17,9 +17,8 @@ class Database():
                 raise Exception("Connection failed to " + url)
             print("DatabaseES.py: connection established")
         except Exception as Ex:
-            print("ERROR Conecting to ElasticSearch")
             traceback.print_exc(Ex)
-            exit(-1)
+
 
     # por fecha, agencia, instrumento y coordenadas
     def generate_standar_query(self, data):

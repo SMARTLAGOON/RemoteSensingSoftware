@@ -1,3 +1,4 @@
+# coding=utf-8
 # La carga y lectura de funciona por "proyectos" que se configuran en el json que se pasa por parametro.
 # El csv generado es el mismo para cada proyecto ya que el nombre se genera con estos datos
 # Se añaden filas al CSV, por lo que al hacer el analisis será conveniente ordenar y/o eliminar duplicados.

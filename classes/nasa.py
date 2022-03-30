@@ -1,8 +1,11 @@
+# coding=utf-8
 # Author: Jose Gines Gimenez Manuel. 2021
 # Python 3.5
 # Descripcion:
 
-#
+# import sys
+# sys.path.append("..")
+
 import requests as RQ
 import netCDF4 as cd
 import os
@@ -10,10 +13,11 @@ import numpy as np
 from numpy import ravel
 import datetime
 import configparser
-import database.elasticSearch_adapter as DB
+from database import elasticSearch_adapter as DB
 import logging
 import base64
 from shapely.geometry import Polygon, Point
+
 
 class NASA:
 
@@ -37,7 +41,7 @@ class NASA:
                 try:
                     self.database = DB.Database(url_elastic)
                 except Exception as e:
-                    print("Error conecting to elastic", url_elastic, str(e))
+                    print("Error conecting to elastic", url_elastic)
                     exit(-1)
             else:
                 self.database = None

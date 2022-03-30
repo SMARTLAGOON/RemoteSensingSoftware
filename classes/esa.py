@@ -1,18 +1,17 @@
+# coding=utf-8
+# import sys
+# sys.path.append("..")
+
 import glob
 import traceback
 import zipfile
-
 import requests as RQ
 import netCDF4 as cd
 import os
 import numpy as np
-from numpy import ravel
 import datetime
-import time
-from shapely.geometry import Polygon
 import configparser
-import database.elasticSearch_adapter as DB
-import json
+from database import elasticSearch_adapter as DB
 import logging
 
 class ESA:
