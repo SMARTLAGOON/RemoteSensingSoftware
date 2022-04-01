@@ -1,6 +1,6 @@
-import esa_vito
+from ..classes import esa_vito as ev
 file = 'c_gls_SWI1km_202203121200_CEURO_SCATSAR_V1.0.1.nc'
-e = esa_vito.Vito()
+e = ev.Vito()
 e.work_path = "."
 
 lat = 38.21189038321695

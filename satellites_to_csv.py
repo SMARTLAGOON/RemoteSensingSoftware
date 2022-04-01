@@ -4,20 +4,19 @@
 
 import sys
 import json
-import traceback
-
 import pandas as PD
 import datetime
 import os
 import csv
-from classes import nasa
-from classes import esa
+import classes.nasa as nasa
+import classes.esa as esa
+import classes.esa_vito as esa_vito
 import logging
 import time
 
-start_time = time.time()
+
+# CREATE OR ADD TO FILE THE DATA
 def to_excel(file, data):
-    # file = path + file name
     add_headers = True
     if os.path.exists(file):
         add_headers = False
@@ -26,6 +25,11 @@ def to_excel(file, data):
         if add_headers:
             w.writeheader()
         w.writerow(data)
+
+
+start_time = time.time()
+
+#READ PROJECT CONFIG
 try:
     config_path = sys.argv[1]
 except Exception as EX:
@@ -35,7 +39,7 @@ except Exception as EX:
 with open(config_path) as config_file:
     config = json.loads(config_file.read())
 
-try:  # fechas
+try:
     project = config['project']
     agency = config['agency']
     satellite = config['satellite']
@@ -67,9 +71,12 @@ except Exception as EX:
     exit(-1)
 
 if str.upper(agency) == "ESA":
-    SAT = esa.ESA(satellite, instrument, work_path, database_file)
+    if instrument == "SGLS":
+        SAT = esa_vito.Vito(config)
+    else:
+        SAT = esa.ESA(config)
 elif str.upper(agency) == "NASA":
-    SAT = nasa.NASA(satellite, instrument, work_path, database_file)
+    SAT = nasa.NASA(config)
 else:
     logging.info(" ERROR: ERROR: Agency value NOT RECOGNIZED")
     exit(-1)
@@ -100,16 +107,12 @@ while current_date <= ffin:
         if data is None:
             logging.info(" DEBUG: Not file for " + current_date.strftime("%Y-%m-%d"))
             break
-
-        # data['lat'] = row['lat']
-        # data['lon'] = row['lon']
         to_excel(file_name, data)
 
     current_date = current_date + datetime.timedelta(days=1)
 
 logging.info(" Files CSV generated at" + csv_path)
 seconds = time.time() - start_time
-logging.info(satellite + ". TIME: " + str(seconds))
-
+logging.info("TIME: " + str(seconds) + " seconds")
 print("--- %s seconds ---" % (time.time() - start_time))
 print("Process finish, check log")

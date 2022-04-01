@@ -1,14 +1,14 @@
 {
-    "project": "Humedad_SUELO",
-    "agency": "ESA",
-    "satellite": "S1",
-    "instrument": "SSM",
-    "processingLevel": "CGLS",
-    "productType": "SSM",
+    "project": "Clorofila",
+    "agency": "NASA",
+    "satellite": "NOAA",
+    "instrument": "VIIRSJ1_L2_OC",
+    "processingLevel": "L2",
+    "productType": "OC",
     "date_from": "2020-01-01",
     "date_to": "2020-01-01",
     "points": "stations.csv",
     "files" : ".",
-    "database": "http://127.0.0.1:9200",
+    "database": "",
     "csv_path": "."
 }

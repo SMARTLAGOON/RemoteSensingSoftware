@@ -6,7 +6,6 @@ import logging
 import sys
 import json
 import traceback
-
 import pandas as PD
 import datetime
 import os
@@ -14,7 +13,7 @@ import classes.nasa as nasa
 import classes.esa as esa
 import classes.esa_vito as esa_vito
 
-
+# READ PROJECT CONFIGURATION
 try:
     config_path = sys.argv[1]
 except Exception as EX:
@@ -25,12 +24,12 @@ except Exception as EX:
 with open(config_path) as config_file:
      config = json.loads(config_file.read())
 
-try:    #fechas
+try:
     project = config['project']
     agency = config['agency']
     satellite = config['satellite']
     instrument = config['instrument']
-    logging.basicConfig(filename="logs/" + satellite + '_donwload.log', format='%(asctime)s %(message)s', level=logging.INFO)
+    logging.basicConfig(filename="logs/" + satellite + '_download.log', format='%(asctime)s %(message)s', level=logging.INFO)
     try:
         date_from = config['date_from']
         date_to = config['date_to']
@@ -65,12 +64,13 @@ except Exception as EX:
     print("Config file parameter missed.")
     exit(-1)
 
+# LOAD THE CLASS TO WORK WITH IT
 if str.upper(agency) == "ESA":
-    #SAT = esa.ESA(satellite, instrument, work_path, database)
+
     if instrument == "SGLS":
         SAT = esa_vito.Vito(config)
     else:
-        SAT =  esa.ESA(config)
+        SAT = esa.ESA(config)
 elif str.upper(agency) == "NASA":
     SAT = nasa.NASA(config)
 else:
@@ -81,10 +81,11 @@ current_date = fini
 
 print("--> Satellite_Download.py....")
 print()
+
+# LOOP CSV POINTS.CSV FOR THE EACH DATE INTO PERIOD DEFINED IN PROJECT.JSON
 while current_date <= ffin:
     fecha = datetime.datetime.strftime(current_date, format="%Y-%m-%d")
     logging.info("--> Looking for data at " + fecha)
-
     for idx, row in points.iterrows():
         try:
             file = SAT.get_file( row['lat'], row['lon'], fecha)

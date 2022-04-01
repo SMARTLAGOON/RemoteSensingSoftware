@@ -1,10 +1,14 @@
 # coding=utf-8
 # Author: Jose Gines Gimenez Manuel. 2021
-# Python 3.5
+# Python 3.8
 # Descripcion:
+# The script download NC files from NASA and ESA APIS.
+# The parameter passed "project.json" defines:
+#   The parameters to request the API.
+#   The path wherein the files will be placed.
+#   The CSV with a list of geopoints (lat, lon) to request API
+#   The range of date to request
 
-# import sys
-# sys.path.append("..")
 
 import requests as RQ
 import netCDF4 as cd
