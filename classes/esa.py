@@ -206,6 +206,10 @@ class ESA:
             zip_ref.extractall(self.work_path)
         os.remove(self.work_path  + '/' +  ESA.ZIP_NAME)
 
+    def remove_HD_file(self, file):
+        os.system("rm -R " + file)
+        
+    # EXTRACT INFORMATION
     def get_weather_point(self, lat, lon):
         try:
             dir = self.work_path + "/" + self.document['file']

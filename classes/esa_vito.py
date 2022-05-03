@@ -143,7 +143,7 @@ class Vito:
         if os.path.exists(self.work_path + "/" + file):
             # el doc existe pero no en la base de datos...QUE HACER?
             return file
-        r = RQ.get(url, auth=RQ.auth.HTTPBasicAuth('josegi', 'Hijoputa1982'), allow_redirects=True)
+        r = RQ.get(url, auth=RQ.auth.HTTPBasicAuth(self.user, self.password), allow_redirects=True)
         if r.headers.get('content-disposition'):
             try:
                 file = re.findall('filename=(.+)', r.headers.get('content-disposition'))[0]
